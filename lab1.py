@@ -3,6 +3,8 @@
 import cv2 as cv
 import numpy as np
 
+output_to_file = False
+
 # Считывание изображения
 img = cv.imread("image.jpg")
 gray_img = cv.cvtColor(img, cv.COLOR_BGR2GRAY) 
@@ -16,7 +18,11 @@ for (x, y, w, h) in faces_rect:
     w += w // 10
     h += 60
     cv.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), thickness=2) 
-    cv.imshow('Detected face', img) 
+
+    if(output_to_file):
+        cv.imwrite("Detected_face.jpg", img)
+    else:
+        cv.imshow('Detected face', img) 
 
     img = img[y:y+h, x:x+w]
     gray_img = gray_img[y:y+h, x:x+w]
@@ -32,8 +38,15 @@ edges_image[corners > 0.01 * corners.max()] = 255
 kernel = np.ones((5,5),np.uint8)
 dilate_image = cv.dilate(edges_image, kernel)
 
-# Отрисовка полученных изображений
-cv.imshow('Face image', img) 
-cv.imshow('Edges image', edges_image) 
-cv.imshow('Dilate image', dilate_image) 
-cv.waitKey(0) 
+if(output_to_file):
+    cv.imwrite("Face image.jpg", img)
+    cv.imwrite('Edges_image.jpg', edges_image) 
+    cv.imwrite('Dilate_image.jpg', dilate_image) 
+else:
+    # Вывод полученных изображений
+    cv.imshow('Face image', img) 
+    cv.imshow('Edges image', edges_image) 
+    cv.imshow('Dilate image', dilate_image) 
+    cv.waitKey(0) 
+
+
